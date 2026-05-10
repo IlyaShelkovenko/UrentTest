@@ -1,4 +1,3 @@
-import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
 plugins {
@@ -64,8 +63,10 @@ kotlin {
 
             // Serialization
             implementation(libs.kotlinx.serialization.json)
-        }
 
+            // Navigation
+            implementation(libs.jetbrains.compose.navigation)
+        }
         iosMain.dependencies {
             implementation(libs.ktor.client.darwin)
         }
@@ -85,6 +86,12 @@ android {
         targetSdk = libs.versions.android.targetSdk.get().toInt()
         versionCode = 1
         versionName = "1.0"
+
+        buildConfigField(
+            "String",
+            "BASE_URL",
+            "\"http://dev-dep.tools.urent.tech:8080/api/\""
+        )
     }
     packaging {
         resources {
@@ -96,6 +103,10 @@ android {
             isMinifyEnabled = false
         }
     }
+    buildFeatures {
+        buildConfig = true
+    }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11

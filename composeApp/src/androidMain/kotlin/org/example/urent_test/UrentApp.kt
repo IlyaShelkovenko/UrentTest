@@ -1,23 +1,20 @@
 package org.example.urent_test
 
 import android.app.Application
-import org.example.urent_test.core.network.di.networkModule
-import org.koin.core.context.startKoin
+import org.example.urent_test.di.initKoin
+import org.koin.android.ext.koin.androidContext
 
 class UrentApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
 
-        initKoin()
-    }
+        val config = AppConfig(
+            baseUrl = BuildConfig.BASE_URL
+        )
 
-    fun initKoin() {
-
-        startKoin {
-            modules(
-                networkModule,
-            )
+        initKoin(appConfig = config) {
+            androidContext(this@UrentApp)
         }
     }
 }

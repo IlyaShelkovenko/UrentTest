@@ -6,18 +6,10 @@ import org.example.urent_test.core.network.UrentApi
 import org.example.urent_test.core.network.createHttpClient
 import org.koin.dsl.module
 
-val networkModule = module {
-
-    single {
-        AppConfig(
-            baseUrl = "http://dev-dep.tools.urent.tech:8080/api/"
-        )
-    }
+fun networkModule(appConfig: AppConfig) = module {
 
     single<HttpClient> {
-        val config = get<AppConfig>()
-
-        createHttpClient(config.baseUrl)
+        createHttpClient(appConfig.baseUrl)
     }
 
     single {
