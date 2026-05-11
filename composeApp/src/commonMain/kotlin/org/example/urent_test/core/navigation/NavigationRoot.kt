@@ -5,9 +5,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import org.example.urent_test.cities_list.presentation.CitiesList
-import org.example.urent_test.city_information.presentation.CityInformation
-import org.example.urent_test.city_information.presentation.CityParams
+import org.example.urent_test.feature.cities_list.presentation.CitiesList
+import org.example.urent_test.feature.city_information.presentation.CityInformation
+import org.example.urent_test.feature.city_information.presentation.CityParams
 
 @Composable
 fun NavigationRoot() {

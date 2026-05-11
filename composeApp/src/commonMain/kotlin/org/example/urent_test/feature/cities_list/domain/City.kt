@@ -1,4 +1,4 @@
-package org.example.urent_test.cities_list.domain
+package org.example.urent_test.feature.cities_list.domain
 
 data class City(
     val id: Long,

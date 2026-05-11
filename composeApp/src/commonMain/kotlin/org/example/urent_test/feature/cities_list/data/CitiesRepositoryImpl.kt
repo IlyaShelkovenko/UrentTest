@@ -1,12 +1,13 @@
-package org.example.urent_test.cities_list.data
+package org.example.urent_test.feature.cities_list.data
 
-import org.example.urent_test.cities_list.domain.CitiesDomain
-import org.example.urent_test.cities_list.domain.CitiesRepository
-import org.example.urent_test.cities_list.domain.City
 import org.example.urent_test.core.network.UrentDevApi
+import org.example.urent_test.feature.cities_list.domain.CitiesDomain
+import org.example.urent_test.feature.cities_list.domain.CitiesRepository
+import org.example.urent_test.feature.cities_list.domain.City
 
 class CitiesRepositoryImpl(
-    private val urentDevApi: UrentDevApi
+    private val urentDevApi: UrentDevApi,
+    private val countryNameMapper: CountryNameMapper
 ) : CitiesRepository {
 
     override suspend fun getCities(
@@ -20,7 +21,7 @@ class CitiesRepositoryImpl(
                 City(
                     id = city.id,
                     name = city.name,
-                    country = city.country,
+                    country = countryNameMapper.map(city.country),
                     population = city.pop.toString()
                 )
             }

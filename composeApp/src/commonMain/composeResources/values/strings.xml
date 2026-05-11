@@ -4,6 +4,7 @@
     <string name="info_label_city">Город</string>
     <string name="info_label_country">Страна</string>
     <string name="info_label_population">Население</string>
+    <string name="label_person_unit">чел</string>
     <string name="button_title_search_information">Поиск информации о городе</string>
     <string name="error_message_no_cities">Городов не найдено</string>
     <string name="button_text_retry">Повторить</string>

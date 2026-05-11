@@ -1,4 +1,4 @@
-package org.example.urent_test.cities_list.presentation
+package org.example.urent_test.feature.cities_list.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -21,13 +21,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import org.example.urent_test.cities_list.domain.City
 import org.example.urent_test.design.components.ListItem
 import org.example.urent_test.design.components.TopBar
 import org.example.urent_test.design.components.UrentSearchField
 import org.example.urent_test.design.modifier.screenInsets
 import org.example.urent_test.design.theme.UrentTestTheme
 import org.example.urent_test.design.tokens.ColorTokens
+import org.example.urent_test.feature.cities_list.domain.City
 import org.jetbrains.compose.resources.stringResource
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState

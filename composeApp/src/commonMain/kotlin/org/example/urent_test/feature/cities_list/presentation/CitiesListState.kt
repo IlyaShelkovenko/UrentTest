@@ -1,6 +1,6 @@
-package org.example.urent_test.cities_list.presentation
+package org.example.urent_test.feature.cities_list.presentation
 
-import org.example.urent_test.cities_list.domain.City
+import org.example.urent_test.feature.cities_list.domain.City
 
 data class CitiesListState(
     val query: String = "",

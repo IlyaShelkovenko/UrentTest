@@ -1,8 +1,8 @@
-package org.example.urent_test.cities_list.presentation
+package org.example.urent_test.feature.cities_list.presentation
 
 import androidx.lifecycle.ViewModel
-import org.example.urent_test.cities_list.domain.CitiesRepository
-import org.example.urent_test.cities_list.domain.City
+import org.example.urent_test.feature.cities_list.domain.CitiesRepository
+import org.example.urent_test.feature.cities_list.domain.City
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.syntax.Syntax
