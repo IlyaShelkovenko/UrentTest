@@ -15,7 +15,6 @@ class UrentDevApi(
         page: Int = 1,
         limit: Int = 20
     ): CitiesResponseDto {
-
         return client.get(CITIES_ENDPOINT) {
             parameter(PARAM_QUERY, query)
             parameter(PARAM_PAGE, page)

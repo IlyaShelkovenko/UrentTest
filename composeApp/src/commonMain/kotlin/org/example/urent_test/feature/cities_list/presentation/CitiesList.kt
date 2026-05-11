@@ -9,18 +9,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 import org.example.urent_test.design.components.ListItem
 import org.example.urent_test.design.components.TopBar
 import org.example.urent_test.design.components.UrentSearchField
@@ -120,17 +126,46 @@ fun CitiesListScreen(
                 }
 
                 else -> {
+                    val listState = rememberLazyListState()
+
+                    LaunchedEffect(listState, state.cities.size, state.hasMore) {
+                        snapshotFlow {
+                            val lastVisibleIndex = listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index
+                                ?: return@snapshotFlow false
+
+                            state.hasMore &&
+                                lastVisibleIndex >= state.cities.lastIndex - CitiesListState.PAGINATION_PREFETCH_DISTANCE
+                        }
+                            .distinctUntilChanged()
+                            .filter { it }
+                            .collect {
+                                onAction(CitiesListAction.OnLoadNextPage)
+                            }
+                    }
+
                     LazyColumn(
-                        contentPadding = PaddingValues(top = 8.dp)
+                        state = listState,
+                        contentPadding = PaddingValues(top = 8.dp),
                     ) {
                         items(
                             items = state.cities,
-                            key = { it.id }
+                            key = { city -> city.id }
                         ) { city ->
                             ListItem(
                                 title = "${city.name}, ${city.country}",
                                 onClick = { onAction(CitiesListAction.OnCityClick(city)) }
                             )
+                        }
+
+                        if (state.isLoadingNextPage) {
+                            item(key = "pagination_progress") {
+                                CircularProgressIndicator(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 16.dp)
+                                        .wrapContentWidth(Alignment.CenterHorizontally)
+                                )
+                            }
                         }
                     }
                 }

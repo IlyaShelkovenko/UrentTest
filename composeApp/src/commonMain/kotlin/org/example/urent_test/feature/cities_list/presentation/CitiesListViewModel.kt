@@ -21,39 +21,85 @@ class CitiesListViewModel(
         when (action) {
             is CitiesListAction.OnQueryChange -> updateQuery(action.query)
             is CitiesListAction.OnCityClick -> navigateToCity(action.city)
+            CitiesListAction.OnLoadNextPage -> loadNextPageIfNeeded()
             CitiesListAction.OnRetryClick -> refresh()
         }
     }
 
     private fun updateQuery(query: String) = intent {
         reduce {
-            state.copy(query = query)
+            state.copy(
+                query = query,
+                cities = emptyList(),
+                currentPage = CitiesListState.FIRST_PAGE,
+                totalCount = 0,
+                hasMore = true,
+                errorMessage = null
+            )
         }
-        loadCities()
+        loadCities(page = CitiesListState.FIRST_PAGE, append = false)
     }
 
     private fun refresh() = intent {
-        loadCities()
+        reduce {
+            state.copy(
+                cities = emptyList(),
+                currentPage = CitiesListState.FIRST_PAGE,
+                totalCount = 0,
+                hasMore = true,
+                errorMessage = null
+            )
+        }
+        loadCities(page = CitiesListState.FIRST_PAGE, append = false)
     }
 
     private fun navigateToCity(city: City) = intent {
         postSideEffect(CitiesListSideEffect.NavigateToCity(city))
     }
 
-    private suspend fun Syntax<CitiesListState, CitiesListSideEffect>.loadCities() {
+    private fun loadNextPageIfNeeded() = intent {
+        val shouldLoadNextPage = state.hasMore &&
+            !state.isLoading &&
+            !state.isLoadingNextPage
+
+        if (!shouldLoadNextPage) return@intent
+
+        loadCities(page = state.currentPage + 1, append = true)
+    }
+
+    private suspend fun Syntax<CitiesListState, CitiesListSideEffect>.loadCities(
+        page: Int = CitiesListState.FIRST_PAGE,
+        append: Boolean = false
+    ) {
         reduce {
-            state.copy(isLoading = true, errorMessage = null)
+            if (append) {
+                state.copy(isLoadingNextPage = true, errorMessage = null)
+            } else {
+                state.copy(isLoading = true, isLoadingNextPage = false, errorMessage = null)
+            }
         }
 
         runCatching {
             citiesRepository.getCities(
-                query = state.query.takeIf { it.isNotBlank() }
+                query = state.query.takeIf { it.isNotBlank() },
+                page = page,
+                limit = state.pageSize
             )
         }.onSuccess { response ->
             reduce {
+                val newCities = if (append) {
+                    state.cities + response.cities
+                } else {
+                    response.cities
+                }
+
                 state.copy(
-                    cities = response.cities,
+                    cities = newCities,
                     isLoading = false,
+                    isLoadingNextPage = false,
+                    currentPage = page,
+                    totalCount = response.total,
+                    hasMore = newCities.size < response.total,
                     errorMessage = null
                 )
             }
@@ -61,6 +107,7 @@ class CitiesListViewModel(
             reduce {
                 state.copy(
                     isLoading = false,
+                    isLoadingNextPage = false,
                     errorMessage = error.message
                 )
             }

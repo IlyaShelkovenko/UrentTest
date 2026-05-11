@@ -24,7 +24,8 @@ class CitiesRepositoryImpl(
                     country = countryNameMapper.map(city.country),
                     population = city.pop.toString()
                 )
-            }
+            },
+            total = response.total
         )
     }
 }
