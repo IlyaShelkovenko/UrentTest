@@ -1,13 +1,12 @@
 package org.example.urent_test
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import org.example.urent_test.core.navigation.NavigationRoot
+import org.example.urent_test.design.theme.UrentTestTheme
 
 @Composable
 fun App() {
-    MaterialTheme {
+    UrentTestTheme {
         NavigationRoot()
     }
 }
-

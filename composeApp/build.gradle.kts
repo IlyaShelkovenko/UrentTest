@@ -49,6 +49,7 @@ kotlin {
             // Koin
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            implementation(libs.koin.compose.viewmodel)
 
             // Orbit
             implementation(libs.orbit.core)
@@ -116,4 +117,3 @@ android {
 dependencies {
     debugImplementation(libs.compose.uiTooling)
 }
-

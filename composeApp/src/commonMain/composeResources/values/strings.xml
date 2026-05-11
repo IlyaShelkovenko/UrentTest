@@ -1,0 +1,8 @@
+<resources>
+    <string name="top_bar_title_city_information">Информация о городе</string>
+    <string name="top_bar_title_cities_list">Список городов</string>
+    <string name="info_label_city">Город</string>
+    <string name="info_label_country">Страна</string>
+    <string name="info_label_population">Население</string>
+    <string name="button_title_search_information">Поиск информации о городе</string>
+</resources>

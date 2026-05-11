@@ -26,7 +26,7 @@ class UrentApi(
     companion object {
         const val CITIES_ENDPOINT = "cities"
         const val PARAM_QUERY = "query"
-        const val PARAM_PAGE = "query"
-        const val PARAM_LIMIT = "query"
+        const val PARAM_PAGE = "page"
+        const val PARAM_LIMIT = "limit"
     }
 }
