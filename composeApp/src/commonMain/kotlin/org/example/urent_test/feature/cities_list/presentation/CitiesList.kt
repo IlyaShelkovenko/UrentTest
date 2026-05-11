@@ -97,24 +97,10 @@ fun CitiesListScreen(
 
                 state.cities.isEmpty() -> {
                     if (state.errorMessage != null) {
-                        Column(
+                        CitiesErrorRetry(
                             modifier = Modifier.align(Alignment.Center),
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = stringResource(Res.string.error_message_something_went_wrong),
-                                color = ColorTokens.Text.Primary,
-                                style = MaterialTheme.typography.bodyMedium
-                            )
-                            Spacer(Modifier.height(8.dp))
-                            Button(
-                                onClick = { onAction(CitiesListAction.OnRetryClick) },
-
-                            ){
-                                Text(stringResource(Res.string.button_text_retry))
-                            }
-                        }
-
+                            onRetryClick = { onAction(CitiesListAction.OnRetryClick) }
+                        )
                     } else {
                         Text(
                             text = stringResource(Res.string.error_message_no_cities),
@@ -166,10 +152,55 @@ fun CitiesListScreen(
                                         .wrapContentWidth(Alignment.CenterHorizontally)
                                 )
                             }
+                        } else if (state.paginationErrorMessage != null) {
+                            item(key = "pagination_error") {
+                                PaginationRetryButton(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 16.dp),
+                                    onRetryClick = { onAction(CitiesListAction.OnRetryNextPageClick) }
+                                )
+                            }
                         }
                     }
                 }
             }
+        }
+    }
+}
+
+@Composable
+private fun PaginationRetryButton(
+    onRetryClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Box(modifier = modifier) {
+        Button(
+            onClick = onRetryClick,
+            modifier = Modifier.align(Alignment.Center)
+        ) {
+            Text(stringResource(Res.string.button_text_retry))
+        }
+    }
+}
+
+@Composable
+private fun CitiesErrorRetry(
+    onRetryClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(
+            text = stringResource(Res.string.error_message_something_went_wrong),
+            color = ColorTokens.Text.Primary,
+            style = MaterialTheme.typography.bodyMedium
+        )
+        Spacer(Modifier.height(8.dp))
+        Button(onClick = onRetryClick) {
+            Text(stringResource(Res.string.button_text_retry))
         }
     }
 }

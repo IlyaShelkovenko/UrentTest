@@ -11,7 +11,8 @@ data class CitiesListState(
     val pageSize: Int = PAGE_SIZE,
     val totalCount: Int = 0,
     val hasMore: Boolean = true,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val paginationErrorMessage: String? = null
 ) {
     companion object {
         const val FIRST_PAGE = 1

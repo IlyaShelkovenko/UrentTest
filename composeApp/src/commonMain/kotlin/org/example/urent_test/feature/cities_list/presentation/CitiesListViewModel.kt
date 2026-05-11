@@ -22,6 +22,7 @@ class CitiesListViewModel(
             is CitiesListAction.OnQueryChange -> updateQuery(action.query)
             is CitiesListAction.OnCityClick -> navigateToCity(action.city)
             CitiesListAction.OnLoadNextPage -> loadNextPageIfNeeded()
+            CitiesListAction.OnRetryNextPageClick -> retryNextPage()
             CitiesListAction.OnRetryClick -> refresh()
         }
     }
@@ -34,7 +35,8 @@ class CitiesListViewModel(
                 currentPage = CitiesListState.FIRST_PAGE,
                 totalCount = 0,
                 hasMore = true,
-                errorMessage = null
+                errorMessage = null,
+                paginationErrorMessage = null
             )
         }
         loadCities(page = CitiesListState.FIRST_PAGE, append = false)
@@ -47,7 +49,8 @@ class CitiesListViewModel(
                 currentPage = CitiesListState.FIRST_PAGE,
                 totalCount = 0,
                 hasMore = true,
-                errorMessage = null
+                errorMessage = null,
+                paginationErrorMessage = null
             )
         }
         loadCities(page = CitiesListState.FIRST_PAGE, append = false)
@@ -60,9 +63,20 @@ class CitiesListViewModel(
     private fun loadNextPageIfNeeded() = intent {
         val shouldLoadNextPage = state.hasMore &&
             !state.isLoading &&
-            !state.isLoadingNextPage
+            !state.isLoadingNextPage &&
+            state.paginationErrorMessage == null
 
         if (!shouldLoadNextPage) return@intent
+
+        loadCities(page = state.currentPage + 1, append = true)
+    }
+
+    private fun retryNextPage() = intent {
+        val shouldRetryNextPage = state.hasMore &&
+            !state.isLoading &&
+            !state.isLoadingNextPage
+
+        if (!shouldRetryNextPage) return@intent
 
         loadCities(page = state.currentPage + 1, append = true)
     }
@@ -73,9 +87,17 @@ class CitiesListViewModel(
     ) {
         reduce {
             if (append) {
-                state.copy(isLoadingNextPage = true, errorMessage = null)
+                state.copy(
+                    isLoadingNextPage = true,
+                    paginationErrorMessage = null
+                )
             } else {
-                state.copy(isLoading = true, isLoadingNextPage = false, errorMessage = null)
+                state.copy(
+                    isLoading = true,
+                    isLoadingNextPage = false,
+                    errorMessage = null,
+                    paginationErrorMessage = null
+                )
             }
         }
 
@@ -100,16 +122,25 @@ class CitiesListViewModel(
                     currentPage = page,
                     totalCount = response.total,
                     hasMore = newCities.size < response.total,
-                    errorMessage = null
+                    errorMessage = null,
+                    paginationErrorMessage = null
                 )
             }
         }.onFailure { error ->
             reduce {
-                state.copy(
-                    isLoading = false,
-                    isLoadingNextPage = false,
-                    errorMessage = error.message
-                )
+                if (append) {
+                    state.copy(
+                        isLoadingNextPage = false,
+                        paginationErrorMessage = error.message
+                    )
+                } else {
+                    state.copy(
+                        isLoading = false,
+                        isLoadingNextPage = false,
+                        errorMessage = error.message,
+                        paginationErrorMessage = null
+                    )
+                }
             }
         }
     }

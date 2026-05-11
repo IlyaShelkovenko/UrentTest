@@ -6,5 +6,6 @@ sealed interface CitiesListAction {
     data class OnQueryChange(val query: String) : CitiesListAction
     data class OnCityClick(val city: City) : CitiesListAction
     data object OnLoadNextPage : CitiesListAction
+    data object OnRetryNextPageClick : CitiesListAction
     data object OnRetryClick : CitiesListAction
 }
