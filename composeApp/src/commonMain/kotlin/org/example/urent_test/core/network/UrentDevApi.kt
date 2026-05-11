@@ -4,7 +4,6 @@ import io.ktor.client.HttpClient
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
-import kotlinx.coroutines.delay
 import org.example.urent_test.core.network.dto.CitiesResponseDto
 
 class UrentDevApi(
@@ -16,7 +15,6 @@ class UrentDevApi(
         page: Int = 1,
         limit: Int = 20
     ): CitiesResponseDto {
-        delay(10000)
         return client.get(CITIES_ENDPOINT) {
             parameter(PARAM_QUERY, query)
             parameter(PARAM_PAGE, page)

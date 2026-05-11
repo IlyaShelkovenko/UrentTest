@@ -1,6 +1,10 @@
 package org.example.urent_test.feature.cities_list.presentation
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import org.example.urent_test.feature.cities_list.domain.CitiesRepository
 import org.example.urent_test.feature.cities_list.domain.City
 import org.orbitmvi.orbit.Container
@@ -11,6 +15,8 @@ import org.orbitmvi.orbit.viewmodel.container
 class CitiesListViewModel(
     private val citiesRepository: CitiesRepository
 ) : ViewModel(), ContainerHost<CitiesListState, CitiesListSideEffect> {
+
+    private var searchJob: Job? = null
 
     override val container: Container<CitiesListState, CitiesListSideEffect> = container(
         initialState = CitiesListState(),
@@ -36,13 +42,23 @@ class CitiesListViewModel(
                 totalCount = 0,
                 hasMore = true,
                 errorMessage = null,
-                paginationErrorMessage = null
+                paginationErrorMessage = null,
+                isLoading = true,
+                isLoadingNextPage = false
             )
         }
-        loadCities(page = CitiesListState.FIRST_PAGE, append = false)
+
+        searchJob?.cancel()
+        searchJob = viewModelScope.launch {
+            delay(SEARCH_DEBOUNCE_MILLIS)
+            intent {
+                loadCities(page = CitiesListState.FIRST_PAGE, append = false)
+            }
+        }
     }
 
     private fun refresh() = intent {
+        searchJob?.cancel()
         reduce {
             state.copy(
                 cities = emptyList(),
@@ -143,5 +159,9 @@ class CitiesListViewModel(
                 }
             }
         }
+    }
+
+    private companion object {
+        const val SEARCH_DEBOUNCE_MILLIS = 500L
     }
 }
