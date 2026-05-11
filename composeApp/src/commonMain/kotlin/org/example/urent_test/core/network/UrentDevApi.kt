@@ -6,7 +6,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import org.example.urent_test.core.network.dto.CitiesResponseDto
 
-class UrentApi(
+class UrentDevApi(
     private val client: HttpClient
 ) {
 
